@@ -23,7 +23,8 @@ const PlaceOrder = () => {
     setCartItems,
     getCartAmount,
     products,
-    formatNaira
+    formatNaira,
+    backendUrl
   } = useContext(ShopContext);
   const [showSummary, setShowSummary] = useState(false  );
 
@@ -135,7 +136,7 @@ const PlaceOrder = () => {
     
       const paystackPublicKey = "pk_test_7caa88a458e07816888c031635b29b46ee650018"; // Replace with your actual Paystack public key
       const totalAmount = getCartAmount() + formData.deliveryFee;
-      const backend_url = "http://localhost:4000"
+    
     
       const handler = PaystackPop.setup({
         key: paystackPublicKey,
@@ -146,10 +147,9 @@ const PlaceOrder = () => {
           if (response.status === 'success') { // Check if the payment is successful
             try {
               const verificationResponse = await axios.post(
-                `${backend_url}/api/order/verifyPaystack?orderId=${orderData.orderId}&reference=${response.reference}`,
-                { orderId: response.reference }
-              );
-    
+                backendUrl + "api/order/verifyPaystack",{ orderId : orderData.orderId, reference: response.reference});
+                // navigate(`/verify?success=true&orderId=${orderData.orderId}`);
+            
               // If verification is successful
               if (verificationResponse.data.success) {
                 // Clear the cart
@@ -182,7 +182,7 @@ const PlaceOrder = () => {
       switch (paymentMethod) {
         case "paystack":
           const response = await axios.post(
-            "http://localhost:4000/api/order/paystack",
+            backendUrl + "/api/order/paystack",
             orderData,
             { headers: { token } }
           );
@@ -194,7 +194,7 @@ const PlaceOrder = () => {
           break;
         case "cash-on-delivery":
           const codResponse = await axios.post(
-            "http://localhost:4000/api/order/place",
+            backendUrl + "/api/order/place",
             orderData,
             { headers: { token } }
           );

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = "https://paragon-backend.vercel.app/";
   // console.log("Backend URL", backendUrl);
 
   const delivery_fee = 10;
