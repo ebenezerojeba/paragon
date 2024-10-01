@@ -182,7 +182,7 @@ const PlaceOrder = () => {
       switch (paymentMethod) {
         case "paystack":
           const response = await axios.post(
-            backendUrl + "/api/order/paystack",
+            backendUrl + "api/order/paystack",
             orderData,
             { headers: { token } }
           );
@@ -194,7 +194,7 @@ const PlaceOrder = () => {
           break;
         case "cash-on-delivery":
           const codResponse = await axios.post(
-            backendUrl + "/api/order/place",
+            backendUrl + "api/order/place",
             orderData,
             { headers: { token } }
           );
@@ -324,7 +324,9 @@ const PlaceOrder = () => {
         {/* Shipping Method */}
 
         <div className="mt-8">
-          <h3 className="text-2xl font-semibold mb-4">Shipping Method</h3>
+        <div className=" from-neutral-600text-xl sm:text-2xl my-3">
+  <Title text1={"SHIPPING"} text2={"METHOD"} />
+</div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <label className="flex items-center gap-2 p-4 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
               <input
@@ -455,7 +457,9 @@ const PlaceOrder = () => {
         {/* Payment Method */}
 
         <div className="mt-8">
-          <h3 className="text-2xl font-semibold mb-4">Payment Method</h3>
+        <div className="text-xl sm:text-2xl my-3">
+  <Title text1={"PAYMENT"} text2={"METHOD"} />
+</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <label className="flex items-center gap-2 p-4 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
               <input

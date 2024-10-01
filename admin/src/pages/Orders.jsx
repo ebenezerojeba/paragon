@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import backendUrl from "../App";
+import { backendUrl } from "../App";
 import { assets } from "../assets/assets";
 import {toast} from 'react-toastify';
 import axios from 'axios';
@@ -17,7 +17,7 @@ const Orders = ({token}) => {
     }
     try {
       const response = await axios.post(
-        backendUrl + "/api/order/list",
+        backendUrl + "api/order/list",
         {},
         { headers: { token } }
       );
@@ -34,7 +34,7 @@ const Orders = ({token}) => {
   const statusHandler = async (event, orderId) => {
     try {
       const response = await axios.post(
-        backendUrl + "/api/order/status",
+        backendUrl + "api/order/status",
         { orderId, status: event.target.value },
         { headers: { token } }
       );

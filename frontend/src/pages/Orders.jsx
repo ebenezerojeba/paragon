@@ -5,14 +5,14 @@ import axios from "axios";
 import { useState } from "react";
 
 const Orders = () => {
-  const { token, formatNaira} = useContext(ShopContext);
+  const { token, formatNaira, backendUrl} = useContext(ShopContext);
 const [orderData, setOrderData] = useState([])
 const loadOrderData = async () => {
   try {
     if (!token) {
       return null
     }
-    const response = await axios.post('http://localhost:4000/api/order/userorders',{},{headers:{token}})
+    const response = await axios.post(backendUrl + "api/order/userorders",{},{headers:{token}})
     if (response.data.success) {
       let allOrdersItem = []
       response.data.orders.map((order)=>{
