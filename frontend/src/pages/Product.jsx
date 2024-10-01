@@ -44,12 +44,12 @@ const Product = () => {
                 src={item}
                 key={index}
                 className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
-                alt=""
+                alt="Product Image"
               />
             ))}
           </div>
           <div className="w-full sm:w-[80%]">
-            <img className="w-full h-auto" src={image} alt="" />
+            <img className="w-full h-auto" src={image} alt="image" />
           </div>
         </div>
 
@@ -57,11 +57,11 @@ const Product = () => {
         <div className="flex-1">
           <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
           <div className="flex items-center gap-1 mt-2">
-            <img src={assets.star_icon} className="w-3 5" alt="" />
-            <img src={assets.star_icon} className="w-3 5" alt="" />
-            <img src={assets.star_icon} className="w-3 5" alt="" />
-            <img src={assets.star_icon} className="w-3 5" alt="" />
-            <img src={assets.star_dull_icon} className="w-3 5" alt="" />
+            <img src={assets.star_icon} className="w-3 5" alt="star-icon" />
+            <img src={assets.star_icon} className="w-3 5" alt="star-icon" />
+            <img src={assets.star_icon} className="w-3 5" alt="star-icon" />
+            <img src={assets.star_icon} className="w-3 5" alt="star-icon" />
+            <img src={assets.star_dull_icon} className="w-3 5" alt="star-dull-icon" />
             <p className="p1-2">{122}</p>
           </div>
           <p className="mt-5 text-3xl font-medium">{formatNaira(productData.price)}</p>

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { ShopContext } from "../context/ShopContext";
 
 const NewsLetter = () => {
+  const { backendUrl } = useContext(ShopContext)
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -11,7 +14,7 @@ const NewsLetter = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/subscribe/newsletter",
+        backendUrl + "api/subscribe/newsletter",
         { email }
       );
       setMessage(response.data.message);

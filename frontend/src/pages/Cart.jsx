@@ -44,7 +44,7 @@ const Cart = () => {
                 <img
                   className="w-16 sm:w-20"
                   src={productData.image[0]}
-                  alt=""
+                  alt="productData Image"
                 />
                 <div>
                   <p className="text-xs sm:text-lg font-medium">
@@ -77,7 +77,7 @@ const Cart = () => {
                 onClick={() => updateQuantity(item._id, size, 0)}
                 className="w-4 mr-4 sm:w-5 cursor-pointer"
                 src={assets.bin_icon}
-                alt=""
+                alt="bin-icon"
               />
             </div>
           );
