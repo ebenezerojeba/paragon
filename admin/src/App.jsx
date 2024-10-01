@@ -8,7 +8,7 @@ import List from './pages/List'
 import Login from './components/Login'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export const backendUrl = "https://paragon-backend.vercel.app/"
+export const backendUrl = "https://paragon-backend.vercel.app"
 export const currency = (number) => {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",

@@ -8,9 +8,6 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const backendUrl = "https://paragon-backend.vercel.app/";
-  // console.log("Backend URL", backendUrl);
-
-  const delivery_fee = 10;
 
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -20,20 +17,19 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState("");
 
   const formatNaira = (number) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: 'NGN',
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
       minimumFractionDigits: 0,
     }).format(number);
-    };
+  };
 
   const addToCart = async (itemId, size) => {
     if (!size) {
       toast.error("Select Product Size");
       return;
-    }
-    else{
-      toast.success("Added to cart")
+    } else {
+      toast.success("Added to cart");
     }
     let cartData = structuredClone(cartItems);
 
@@ -52,7 +48,7 @@ const ShopContextProvider = (props) => {
     if (token) {
       try {
         await axios.post(
-          'http://localhost:4000/api/cart/add',
+          backendUrl + "api/cart/add",
           { itemId, size },
           { headers: { token } }
         );
@@ -90,7 +86,7 @@ const ShopContextProvider = (props) => {
     if (token) {
       try {
         await axios.post(
-          "http://localhost:4000/api/cart/update",
+          backendUrl + "api/cart/update",
           { itemId, size, quantity },
           { headers: { token } }
         );
@@ -118,9 +114,7 @@ const ShopContextProvider = (props) => {
 
   const getProductsData = async (params) => {
     try {
-      const response = await axios.get(
-        "http://localhost:4000/api/product/list"
-      );
+      const response = await axios.get(backendUrl + "api/product/list");
       if (response.data.success) {
         setProducts(response.data.products);
       } else {
@@ -135,7 +129,7 @@ const ShopContextProvider = (props) => {
   const getUserCart = async ({ token }) => {
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/cart/get',
+        backendUrl + "api/cart/get",
         {},
         { headers: { token } }
       );
@@ -161,7 +155,6 @@ const ShopContextProvider = (props) => {
 
   const value = {
     products,
-    delivery_fee,
     search,
     showSearch,
     setSearch,
