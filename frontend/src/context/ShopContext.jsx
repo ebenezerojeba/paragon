@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
-  const backendUrl = "https://paragon-backend.vercel.app/";
+  const backendUrl = "https://paragonhubbackend.vercel.app/";
 
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
