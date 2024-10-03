@@ -340,7 +340,7 @@ const Add = ({ token }) => {
       onSubmit={onSubmitHandler}
       className="flex flex-col w-full items-start gap-3"
     >
-      {/* ... existing form fields ... */}
+  
 
       <div>
         <p className="mb-2">Upload Image</p>
