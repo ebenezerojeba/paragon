@@ -9,7 +9,9 @@ a.active hr{
 }
 *{
   /* font-family: "Ysabeau", sans-serif; */
-  font-family: 'Ysabeau Infant', sans-serif;
+  /* font-family: 'Ysabeau Infant', sans-serif;
+   */
+   font-family: Outfit;
 }
 .prata-regular {
   font-family: "Prata", serif;

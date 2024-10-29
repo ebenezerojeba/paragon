@@ -2,71 +2,73 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 const NewsLetter = () => {
-  const { backendUrl } = useContext(ShopContext)
+  const { backendUrl } = useContext(ShopContext);
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     setIsLoading(true);
+
     try {
       const response = await axios.post(
-        backendUrl + "api/subscribe/newsletter",
+        `${backendUrl}api/subscribe/newsletter`,
         { email }
       );
-      setMessage(response.data.message);
-      setEmail("");
+
+      toast.success(response.data.message || "Subscribed successfully!");
+      setEmail(""); // Clear email input after success
+      // sendMail(email)
     } catch (error) {
-      setMessage(
+      console.error("API Error:", error); // Log the error for debugging
+      toast.error(
         error.response?.data?.message || "An error occurred. Please try again."
       );
     }
+
     setIsLoading(false);
   };
 
   return (
-    <div className="text-center p-6">
-      <p className="text-2xl font-medium text-gray-800">
+    <div className="text-center p-6 max-w-2xl mx-auto">
+      <h2 className="text-2xl font-medium text-gray-800 mb-2">
         Subscribe now & get 20% off your first order
-      </p>
-      <p className="text-gray-600 mt-3">
+      </h2>
+      <p className="text-gray-600 mb-6">
         Join our community for exclusive deals, style tips, and first access to
         new collections.
       </p>
       <form
         onSubmit={onSubmitHandler}
-        className="w-full sm:w-1/2 flex items-center gap-3 mx-auto my-6 border pl-3"
+        className="flex flex-col sm:flex-row items-center gap-3"
       >
-        <input
-          className="w-full sm:flex-1 outline-none py-2"
-          type="email"
-          placeholder="Enter your email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="relative w-full">
+          <input
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+            type="email"
+            placeholder="Enter your email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-label="Email address"
+          />
+          {isLoading && (
+            <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 animate-spin h-5 w-5 text-gray-400" />
+          )}
+        </div>
         <button
           type="submit"
-          className="bg-black text-white text-xs px-10 py-4 hover:bg-gray-800 transition-colors"
+          className="w-full sm:w-auto bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          {isLoading ? "SUBSCRIBING..." : "SUBSCRIBE"}
+          {isLoading ? "Subscribing..." : "Subscribe"}
         </button>
       </form>
-      {message && (
-        <p
-          className={`mt-2 ${
-            message.includes("Thank you") ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
     </div>
   );
 };
-
 export default NewsLetter;

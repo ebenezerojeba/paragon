@@ -141,7 +141,25 @@ const ShopContextProvider = (props) => {
       toast.error(error.message);
     }
   };
+ 
 
+  const sendMail = async (email) => {
+    
+    try {
+      const response = await axios.post(
+        `${backendUrl}api/subscribe/send-welcome`,
+        { email }
+      );
+
+      toast.success(response.data.message || "Subscribed successfully!");
+      setEmail(""); // Clear email input after success
+    } catch (error) {
+      console.error("API Error:", error); // Log the error for debugging
+      toast.error(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
+    }
+  }
   useEffect(() => {
     getProductsData();
   }, []);
@@ -158,7 +176,7 @@ const ShopContextProvider = (props) => {
     search,
     showSearch,
     setSearch,
-    setShowSearch,
+    setShowSearch, 
     cartItems,
     setCartItems,
     addToCart,
@@ -171,6 +189,7 @@ const ShopContextProvider = (props) => {
     formatNaira,
     setToken,
     getProductsData,
+    sendMail
   };
   return (
     <ShopContext.Provider value={value}>{props.children}</ShopContext.Provider>
