@@ -4,40 +4,148 @@ import Paystack from "paystack";
 import { v4 as uuidv4 } from 'uuid';
 
 import Flutterwave from "flutterwave-node-v3";
-import { configDotenv } from "dotenv";
-configDotenv()
+import dotenv from 'dotenv'
+import { orderConfirmation } from "../emails/orderConfirmation.js";
+import { transporter } from "../emails/transporter.js";
+
+dotenv.config()
 
 // Placing orders using COD Method
+// const placeOrder = async (req, res) => {
+//   try {
+//     const { userId, items, amount, address, deliveryFee } = req.body;
+
+//     const orderData = {
+//       userId,
+//       items,
+//       address: {
+//         ...address,
+//         state: address.state, // Include state
+//         lga: address.lga,     // Include LGA
+//       },
+//       deliveryFee,
+//       amount,
+//       paymentMethod: "cod",
+//       payment: false,
+//       date: Date.now(),
+//     };
+//     const newOrder = new orderModel(orderData);
+
+//     await newOrder.save();
+
+//     await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+//     res.json({ success: true, message: "Order Placed" });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ succcess: false, message: error.message });
+//   }
+// };
+
 const placeOrder = async (req, res) => {
   try {
+    console.log('Starting placeOrder function');
     const { userId, items, amount, address, deliveryFee } = req.body;
+    console.log('Order details:', { userId, items, amount, address, deliveryFee });
+
+    // Fetch user details to get userEmail and userName
+    console.log('Fetching user details');
+    const user = await userModel.findById(userId);
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const userEmail = user.email;
+    const userName = user.name;
+    console.log('User details:', { userEmail, userName });
 
     const orderData = {
       userId,
       items,
+      amount,
+      deliveryFee,
       address: {
         ...address,
-        state: address.state, // Include state
-        lga: address.lga,     // Include LGA
+        state: address.state,
+        lga: address.lga,
       },
-      deliveryFee,
-      amount,
       paymentMethod: "cod",
       payment: false,
       date: Date.now(),
     };
+    
+    console.log('Creating new order');
     const newOrder = new orderModel(orderData);
-
     await newOrder.save();
+    console.log('New order saved:', newOrder._id);
 
+    console.log('Updating user cart');
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
+    console.log('User cart updated');
 
+    // Create email content
+    console.log('Creating email content');
+    const emailHtml = orderConfirmation(userName, newOrder._id, items, amount);
+
+    const sendOrder = async () => {
+      console.log('Sending confirmation email to user');
+      try {
+        const info = await transporter.sendMail({
+          from: '"Paragon Hub" <no-reply@paragonhub.com>',
+          to: userEmail,
+          subject: 'Order Confirmation - Paragon Hub',
+          html: emailHtml,
+        });
+        console.log('Confirmation email sent:', info.messageId);
+      } catch (error) {
+        console.error("Error sending confirmation email:", error);
+        // Don't return here, continue with the function
+      }
+    };
+
+    console.log('Calling sendOrder function');
+    await sendOrder();
+
+    const sendAdmin = async () => {
+      console.log('Sending notification email to admin');
+      try {
+        const info = await transporter.sendMail({
+          from: '"Paragon Hub" <no-reply@paragonhub.com>',
+          to: 'ojebaebenezer@gmail.com',
+          subject: `New Order Placed - Order ID: ${newOrder._id}`,
+          html: `
+            <h1>New Order Received</h1>
+            <p>A new order has been placed with the following details:</p>
+            <p><strong>Order ID:</strong> ${newOrder._id}</p>
+            <p><strong>User:</strong> ${userName} (${userEmail})</p>
+            <p><strong>Total Amount:</strong> ₦${amount}</p>
+            <p><strong>Delivery Fee:</strong> ₦${deliveryFee}</p>
+            <p><strong>Payment Method:</strong> ${orderData.paymentMethod}</p>
+            <p><strong>Items:</strong></p>
+            <ul>
+              ${items.map(item => `<li>${item.name} - ${item.quantity} x ₦${item.price}</li>`).join('')}
+            </ul>
+          `,
+        });
+        console.log('Admin notification email sent:', info.messageId);
+      } catch (error) {
+        console.error("Error sending admin notification email:", error);
+        // Don't return here, continue with the function
+      }
+    };
+
+    console.log('Calling sendAdmin function');
+    await sendAdmin();
+
+    console.log('Order process completed successfully');
     res.json({ success: true, message: "Order Placed" });
   } catch (error) {
-    console.log(error);
-    res.json({ succcess: false, message: error.message });
+    console.error('Error in placeOrder function:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
-};
+}; 
+
 
 // Initialize payment gateways
 
