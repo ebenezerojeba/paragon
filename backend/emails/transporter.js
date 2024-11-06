@@ -17,11 +17,19 @@ dotenv.config(); // Load environment variables from .env file
 
 export const transporter = nodemailer.createTransport({
   service: 'gmail',
+  secure: true, // use TLS
   auth: {
     user: process.env.EMAIL_USER, // Use environment variable
     pass: process.env.EMAIL_PASS, // Use environment variable
   },
+  tls: {
+    rejectUnauthorized: false, // Bypass the certificate verification
+  },
 });
+
+
+
+
 
 
 
