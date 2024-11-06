@@ -1,16 +1,4 @@
-import p_img1 from './p_img1.png'
-import p_img2_1 from './p_img2_1.png'
-import p_img2_2 from './p_img2_2.png'
-import p_img2_3 from './p_img2_3.png'
-import p_img2_4 from './p_img2_4.png'
-import p_img3 from './p_img3.png'
-import p_img4 from './p_img4.png'
-import p_img5 from './p_img5.png'
-import p_img6 from './p_img6.png'
-import p_img7 from './p_img7.png'
-import p_img8 from './p_img8.png'
-import p_img9 from './p_img9.png'
-import p_img10 from './p_img10.png'
+
 import p_img11 from './p_img11.png'
 import p_img12 from './p_img12.png'
 import p_img13 from './p_img13.png'
@@ -118,6 +106,9 @@ import singlet_main from './singlet-main.jpg'
 import singlet_side from './singlet-side.jpg'
 import singlet_side3 from './singlet-side3.jpg'
 import singlet_side4 from './singlet-side4.jpg'
+import about_1 from './about1.jpeg'
+import about_2 from './about2.jpeg'
+import about_3 from './about3.jpeg'
 
 
 
@@ -125,6 +116,9 @@ import singlet_side4 from './singlet-side4.jpg'
 
 
 export const assets = {
+    about_1,
+    about_2,
+    about_3,
     baggy_main,
     baggy_side,
     baggy_side2,

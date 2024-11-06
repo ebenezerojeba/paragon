@@ -10,7 +10,7 @@ const About = () => {
         <Title text1={'ABOUT'} text2={'US'} />
       </div>
       <div className="my-10 flex flex-col md:flex-row gap-16">
-        <img className='w-full md:max-w-[450px]' src={assets.about_img} alt="About Paragon Hub" />
+        <img className='w-full md:max-w-[450px]' src={assets.about_2} alt="About Paragon Hub" />
         <div className="flex flex-col justify-center gap-6 md:w-2/4 text-gray-600">
           <p>At Paragon Hub, we redefine men's fashion by blending style and comfort. Our carefully curated collection is designed to empower men to express their individuality with confidence.</p>
           <p>We take pride in sourcing high-quality pieces that cater to every occasion, from casual outings to formal events. Our mission is to elevate your wardrobe with stylish options that reflect your unique taste.</p>

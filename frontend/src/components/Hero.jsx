@@ -35,7 +35,7 @@ const Hero = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row border border-gray-400 shadow-lg overflow-hidden min-h-[500px] lg:min-h-[600px]">
+    <div className="flex flex-col lg:flex-row border border-gray-100 shadow-lg overflow-hidden min-h-[500px] lg:min-h-[600px]">
       {/* Enhanced Left Side */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-10 lg:p-16 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="relative w-full max-w-xl">

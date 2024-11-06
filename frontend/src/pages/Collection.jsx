@@ -246,7 +246,7 @@ const Collection = () => {
             />
           ))}
         </div>
-        {/* Pagination */}
+        {/*  Pagination */}
         <div className="flex justify-center mt-8">
           {[...Array(totalPages)].map((_, i) => (
             <button

@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 a.active hr{
   display: block;
 }
@@ -12,6 +14,11 @@ a.active hr{
   /* font-family: 'Ysabeau Infant', sans-serif;
    */
    font-family: Outfit;
+   margin: 0;
+   padding: 0;
+}
+#app {
+  background-color: #ffffff;
 }
 .prata-regular {
   font-family: "Prata", serif;

@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
+import PaystackPop from '@paystack/inline-js'
 import { ngst, lgasByState } from "../data.js";
 import { toast } from "react-toastify";
 import { useLoadScript, Autocomplete } from "@react-google-maps/api";
@@ -113,6 +114,7 @@ const PlaceOrder = () => {
 
         
     let orderData = {
+      
       address: {
         ...formData,
         state: selectedState,
@@ -138,7 +140,7 @@ const PlaceOrder = () => {
       const totalAmount = getCartAmount() + formData.deliveryFee;
     
     
-      const handler = PaystackPop.setup({
+      const handler = new PaystackPop({
         key: paystackPublicKey,
         email: formData.email, // Customer's email
         amount: totalAmount * 100, // Amount is in kobo
@@ -175,7 +177,7 @@ const PlaceOrder = () => {
       });
     
       // Open the Paystack payment modal
-      handler.openIframe();
+      handler.open();
     };
     
 
@@ -183,8 +185,7 @@ const PlaceOrder = () => {
         case "paystack":
           const response = await axios.post(
             backendUrl + "api/order/paystack",
-            orderData,
-            { headers: { token } }
+            orderData, {header: {token}}
           );
           if (response.data.success) {
             initPaystack(response.data.order);
@@ -195,8 +196,7 @@ const PlaceOrder = () => {
         case "cash-on-delivery":
           const codResponse = await axios.post(
             backendUrl + "api/order/place",
-            orderData,
-            { headers: { token } }
+            orderData, {headers: {token}}
           );
           if (codResponse.data.success) {
             setCartItems({});
