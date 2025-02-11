@@ -19,7 +19,7 @@ orderRouter.post('/flutterwave',authUser,placeOrderFlutterwave)
 orderRouter.post('/userorders',authUser,userOrders)
 
 // verify payment
-orderRouter.post('/verifyPaystack', authUser,verifyPaystack)
+orderRouter.get( '/verify', authUser,verifyPaystack)
 orderRouter.post('/verifyFlutterwave', authUser,verifyFlutterwave )
 
 

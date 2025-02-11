@@ -3,13 +3,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { backendUrl } from "../App";
 import { assets } from "../assets/assets";
-import {toast} from 'react-toastify';
-import axios from 'axios';
+import { toast } from "react-toastify";
+import axios from "axios";
 
-
-const Orders = ({token}) => {
+const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
-
 
   const fetchAllOrders = async () => {
     if (!token) {
@@ -67,19 +65,38 @@ const Orders = ({token}) => {
                   if (index === order.items.length - 1) {
                     return (
                       <p className="py-0.5" key={index}>
-                        {item.name} x {item.quantity} <span className="font-extrabold"> Size: {item.size}</span> 
+                        {item.name} x {item.quantity}{" "}
+                        <span className="font-extrabold">
+                          {" "}
+                          Size: {item.size}
+                        </span>
                       </p>
-                      
                     );
                   } else {
                     return (
                       <p className="py-0.5" key={index}>
-                        {item.name} x {item.quantity} <span className="font-extrabold"> Size: {item.size}</span> ,
+                        {item.name} x {item.quantity}{" "}
+                        <span className="font-extrabold">
+                          {" "}
+                          Size: {item.size}
+                        </span>{" "}
+                        ,
                       </p>
                     );
                   }
                 })}
+
               </div>
+
+              {
+                order.address ? (
+                  <>
+                
+              
+
+
+
+
               <p className="mt-3 mb-2 font-medium">
                 {order.address.firstName + " " + order.address.lastName}
               </p>
@@ -89,22 +106,30 @@ const Orders = ({token}) => {
                 <p>{order.address.state}</p>
               </div>
               <p>{order.address.phone}</p>
-             
-             
-            
+
+                 </>
+                ) : (
+                  <p className="text-red-500">Address deatils unavailable</p>
+                )}
+
             </div>
             <div>
               <p className="text-sm sm:text-[15px]">
                 Items : {order.items.length}
-               
               </p>
               <p className="mt-3">Method : {order.paymentMethod}</p>
-              <p>Payment : {order.paymentMethod === 'Online' ? "Paid" : "Pending"}</p>
+              <p>
+                Payment :{" "}
+                {order.paymentMethod === "Online" ? "Paid" : "Pending"}
+              </p>
               <p>Date : {new Date(order.date).toLocaleDateString()}</p>
             </div>
             <p>Delivery Fee: {order.deliveryFee}</p>
-            <p className="text-sm sm:text-[15px] font-bold"> Total: {order.amount.toLocaleString()}</p>
-           
+            <p className="text-sm sm:text-[15px] font-bold">
+              {" "}
+              Total: {order.amount}
+            </p>
+
             <select
               onChange={(event) => statusHandler(event, order._id)}
               value={order.status}

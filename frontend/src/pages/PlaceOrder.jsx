@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useMemo, useContext, useState, useEffect } from "react";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
-import PaystackPop from '@paystack/inline-js'
+import PaystackPop from "@paystack/inline-js";
 import { ngst, lgasByState } from "../data.js";
 import { toast } from "react-toastify";
 import { useLoadScript, Autocomplete } from "@react-google-maps/api";
@@ -25,9 +25,9 @@ const PlaceOrder = () => {
     getCartAmount,
     products,
     formatNaira,
-    backendUrl
+    backendUrl,
   } = useContext(ShopContext);
-  const [showSummary, setShowSummary] = useState(false  );
+  const [showSummary, setShowSummary] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState();
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ const PlaceOrder = () => {
     email: "",
     address: "",
     phone: "",
-    deliveryFee : ""
+    deliveryFee: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [selectedState, setSelectedState] = useState("");
@@ -59,7 +59,7 @@ const PlaceOrder = () => {
     setSelectedLGA(e.target.value);
   };
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAyV9JFGclsiKEyy39JaAsB-2M6Topz96I",
+    googleMapsApiKey: import.meta.VITE_GOOGLE_API_KEY,
     libraries,
   });
   const toggleSummary = () => {
@@ -112,80 +112,81 @@ const PlaceOrder = () => {
         }
       }
 
-        
-    let orderData = {
-      
-      address: {
-        ...formData,
-        state: selectedState,
-        lga: selectedLGA,
-      },
-      items: orderItems,
-      subtotal: getCartAmount(),
-      deliveryFee: formData.deliveryFee,
-      amount: getCartAmount() + formData.deliveryFee,
-      shippingMethod: formData.shippingMethod,
-    
-    
-    };
+      let orderData = {
+        address: {
+          ...formData,
+          state: selectedState,
+          lga: selectedLGA,
+        },
+        items: orderItems,
+        subtotal: getCartAmount(),
+        deliveryFee: formData.deliveryFee,
+        amount: getCartAmount() + formData.deliveryFee,
+        shippingMethod: formData.shippingMethod,
+      };
 
-    const initPaystack = async () => {
-      if (typeof PaystackPop === "undefined") {
-        console.error("Paystack library not loaded.");
-        toast.error("Payment service unavailable. Please try again later.");
-        return;
-      }
-    
-      const paystackPublicKey = "pk_test_7caa88a458e07816888c031635b29b46ee650018"; // Replace with your actual Paystack public key
-      const totalAmount = getCartAmount() + formData.deliveryFee;
-    
-    
-      const handler = new PaystackPop({
-        key: paystackPublicKey,
-        email: formData.email, // Customer's email
-        amount: totalAmount * 100, // Amount is in kobo
-        onSuccess: async (response) => {
-          // Handle successful payment
-          if (response.status === 'success') { // Check if the payment is successful
-            try {
-              const verificationResponse = await axios.post(
-                backendUrl + "api/order/verifyPaystack",{ orderId : orderData.orderId, reference: response.reference});
+      const initPaystack = async (orderData) => {
+        if (typeof PaystackPop === "undefined") {
+          console.error("Paystack library not loaded.");
+          toast.error("Payment service unavailable. Please try again later.");
+          return;
+        }
+
+        const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY; // Replace with your actual Paystack public key
+        const totalAmount = getCartAmount() + formData.deliveryFee;
+
+        const handler = new PaystackPop({
+          key: paystackPublicKey,
+          email: formData.email, // Customer's email
+          amount: totalAmount * 100, // Amount is in kobo
+          onSuccess: async (response) => {
+            // Handle successful payment
+            if (response.status === "success") {
+              // Check if the payment is successful
+              try {
+                const verificationResponse = await axios.get(
+                  backendUrl + "api/order/verify",
+                  { orderId: orderData.orderId, reference: response.reference }
+                );
                 // navigate(`/verify?success=true&orderId=${orderData.orderId}`);
-            
-              // If verification is successful
-              if (verificationResponse.data.success) {
-                // Clear the cart
-                setCartItems({});
-    
-                // Navigate to the orders page
-                navigate("/orders");
-              } else {
-                toast.error("Payment verification failed. Please try again.");
+
+                // If verification is successful
+                if (verificationResponse.data.success) {
+                  // Clear the cart
+                  setCartItems({});
+
+                  // Navigate to the orders page
+                  navigate("/orders");
+                } else {
+                  toast.error("Payment verification failed. Please try again.");
+                }
+              } catch (verificationError) {
+                console.error("Verification error:", verificationError);
+                toast.error(
+                  "An error occurred during payment verification. Please try again."
+                );
               }
-            } catch (verificationError) {
-              toast.error("An error occurred during payment verification. Please try again.");
+            } else {
+              toast.error("Payment was not successful");
+              navigate("/");
             }
-          } else {
-            toast.error("Payment was not successful");
-            navigate("/");
-          }
-        },
-        onClose: () => {
-          console.log("Payment popup closed.");
-          toast.info("Payment process canceled.");
-        },
-      });
-    
-      // Open the Paystack payment modal
-      handler.open();
-    };
-    
+          },
+          onClose: () => {
+            console.log("Payment popup closed.");
+            toast.info("Payment process canceled.");
+          },
+        });
+
+        // Open the Paystack payment modal
+        handler.open();
+      };
 
       switch (paymentMethod) {
         case "paystack":
           const response = await axios.post(
             backendUrl + "api/order/paystack",
-            orderData, {header: {token}}
+            orderData,
+            { headers: { token } }
           );
           if (response.data.success) {
             initPaystack(response.data.order);
@@ -196,7 +197,8 @@ const PlaceOrder = () => {
         case "cash-on-delivery":
           const codResponse = await axios.post(
             backendUrl + "api/order/place",
-            orderData, {headers: {token}}
+            orderData,
+            { headers: { token } }
           );
           if (codResponse.data.success) {
             setCartItems({});
@@ -229,13 +231,12 @@ const PlaceOrder = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="text-xl sm:text-2xl my-3">
-  <Title text1={"DELIVERY"} text2={"INFORMATION"} />
-</div>
+        <Title text1={"DELIVERY"} text2={"INFORMATION"} />
+      </div>
       <form
         onSubmit={onSubmitHandler}
         className="flex flex-col gap-6 pt-5 min-h-[80vh] border-t bg-neutral-50"
       >
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -324,9 +325,9 @@ const PlaceOrder = () => {
         {/* Shipping Method */}
 
         <div className="mt-8">
-        <div className=" from-neutral-600text-xl sm:text-2xl my-3">
-  <Title text1={"SHIPPING"} text2={"METHOD"} />
-</div>
+          <div className=" from-neutral-600text-xl sm:text-2xl my-3">
+            <Title text1={"SHIPPING"} text2={"METHOD"} />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <label className="flex items-center gap-2 p-4 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
               <input
@@ -457,9 +458,9 @@ const PlaceOrder = () => {
         {/* Payment Method */}
 
         <div className="mt-8">
-        <div className="text-xl sm:text-2xl my-3">
-  <Title text1={"PAYMENT"} text2={"METHOD"} />
-</div>
+          <div className="text-xl sm:text-2xl my-3">
+            <Title text1={"PAYMENT"} text2={"METHOD"} />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <label className="flex items-center gap-2 p-4 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
               <input
@@ -489,21 +490,18 @@ const PlaceOrder = () => {
         </div>
 
         {/* Order Summary */}
-        <div>
-
-        </div>
+        <div></div>
         <div className="mt-8">
-      
-         <Title text1={'ORDER'} text2={'TOTAL'} />
+          <Title text1={"ORDER"} text2={"TOTAL"} />
           <span
             type="button"
             onClick={toggleSummary}
-            className="text-lg ml-3 absolute font-semibold ">
+            className="text-lg ml-3 absolute font-semibold "
+          >
             {showSummary ? <ArrowRight /> : <ArrowDown />}
           </span>
 
           {showSummary && (
-            
             <div className="bg-gray-50 p-6 rounded-lg">
               {/* <h3 className="text-2xl font-semibold mb-4">Order Summary</h3> */}
               <div className="flex justify-between mb-2">
@@ -515,13 +513,19 @@ const PlaceOrder = () => {
               <div className="flex justify-between mb-2">
                 <span>Delivery Fee:</span>
                 <span className="font-medium">
-                <p>{getCartAmount() === 0 ? 0 : formatNaira(formData.deliveryFee)}</p>
+                  <p>
+                    {getCartAmount() === 0
+                      ? 0
+                      : formatNaira(formData.deliveryFee)}
+                  </p>
                 </span>
               </div>
               <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t">
                 <span>Total:</span>
                 <span>
-                {getCartAmount() === 0 ? 0 : formatNaira(getCartAmount() + formData.deliveryFee)}
+                  {getCartAmount() === 0
+                    ? 0
+                    : formatNaira(getCartAmount() + formData.deliveryFee)}
                 </span>
               </div>
             </div>
@@ -543,7 +547,7 @@ const PlaceOrder = () => {
           )}
         </button>
       </form>
-      
+
       <p className="mt-4">
         {" "}
         Don't have an account yet? Kindly{" "}

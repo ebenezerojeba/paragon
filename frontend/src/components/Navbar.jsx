@@ -96,7 +96,9 @@ const Navbar = () => {
       searchParams.append("sort", item.sort);
     }
 
-    const url = `/collection${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+    const url = `/collection${
+      searchParams.toString() ? `?${searchParams.toString()}` : ""
+    }`;
     navigate(url);
     setActiveCategory(null);
   };
@@ -134,19 +136,29 @@ const Navbar = () => {
               HOME
             </NavLink>
 
+            <NavLink
+              to="/collection"
+              className={({ isActive }) => `
+                relative text-sm font-medium tracking-wide
+                ${isActive ? "text-black" : "text-gray-600"}
+                before:content-[''] before:absolute before:-bottom-1 before:left-0 
+                before:w-full before:h-0.5 before:bg-black 
+                before:origin-right before:scale-x-0 before:transition-transform
+                hover:before:scale-x-100 hover:before:origin-left
+              `}
+            >
+              COLLECTION
+            </NavLink>
+
             {/* Collection Mega Menu Trigger */}
-            <div
+            {/* <div
               className="relative group"
               onMouseEnter={() => setActiveCategory("collection")}
               onMouseLeave={() => setActiveCategory(null)}
-            >
-              <button className="flex items-center space-x-1 text-sm font-medium tracking-wide text-gray-600 hover:text-black">
-                <span>COLLECTION</span>
-                <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-              </button>
+            > */}
 
-              {/* Mega Menu */}
-              {/* {activeCategory === "collection" && (
+            {/* Mega Menu */}
+            {/* {activeCategory === "collection" && (
                 <div className="absolute top-full left-0 w-screen max-w-4xl bg-white shadow-xl rounded-b-lg transform translate-y-2 opacity-100 transition-all duration-200">
                   <div className="grid grid-cols-3 gap-8 p-8">
                     {categories.collection.subcategories.map((section, idx) => (
@@ -176,12 +188,9 @@ const Navbar = () => {
                   </div>
                 </div>
               )}
-            </div> */}
+            </div>  */}
 
-
-
-
-{activeCategory === "collection" && (
+            {/* {/* {activeCategory === "collection" && (
       <div className="absolute top-full left-0 w-screen max-w-4xl bg-white shadow-xl rounded-b-lg transform translate-y-2 opacity-100 transition-all duration-200">
         <div className="grid grid-cols-3 gap-8 p-8">
           {categories.collection.subcategories.map((section, idx) => (
@@ -199,7 +208,7 @@ const Navbar = () => {
                         item.sort ? { sort: item.sort } : {}
                       ).toString()}`}
                       className="text-sm text-gray-600 hover:text-black transition-colors block w-full text-left"
-                      onClick={() => setActiveCategory(null)}
+                      onClick={() => handleCollectionClick(item)}
                     >
                       {item.name}
                     </Link>
@@ -211,12 +220,12 @@ const Navbar = () => {
         </div>
         <div className="bg-gray-50 px-8 py-4 rounded-b-lg">
           <p className="text-sm text-gray-500">
-            Free shipping on all orders over $100
+            Free shipping on all orders over 100,000
           </p>
         </div>
       </div>
     )}
-</div>
+</div> */}
 
             {/* Rest of the navbar code remains the same */}
 

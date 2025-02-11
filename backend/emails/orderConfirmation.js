@@ -2,7 +2,7 @@
    export const orderConfirmation = ({ userName, orderId, items, amount, deliveryFee, paymentMethod, userAddress, userPhone }) => `
   <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
     <!-- Header -->
-    <div style="background-color: #4CAF50; padding: 20px; text-align: center; color: #fff;">
+    <div style="background-color: #4CAF50; padding: 20px; text-align: center; color: black;">
       <h1 style="margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
       <p style="margin: 5px 0; font-size: 16px;">Order Confirmation - #${orderId}</p>
     </div>
